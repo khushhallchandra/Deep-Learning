@@ -9,6 +9,7 @@ def load():
 
 	training_inputs = [np.reshape(x, (784, 1)) for x in tr_d[0]]
 	training_results = [vectorized_result(y) for y in tr_d[1]]
+	print vectorized_result(y)
 	training_data = zip(training_inputs, training_results)
 
 	validation_inputs = [np.reshape(x, (784, 1)) for x in va_d[0]]
@@ -18,14 +19,10 @@ def load():
 	test_data = zip(test_inputs, te_d[1])
     
     	return(training_data, validation_data, test_data)
-
+    	
 
 def vectorized_result(j):
-    e = np.zeros((10, 1))
-    e[j] = 1.0
-    return e
+	e = np.zeros((10, 1))
+	e[j] = 1.0
+	return e
 
-
-print "Started"
-a=load()
-print len(a)

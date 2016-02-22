@@ -43,6 +43,18 @@ class Neuron:
     def calculate_output(self, inputs):
         self.output = sigmoid(total_net_input(inputs))
         return self.output
+
+    def pd_error_wrt_total_net_input(self, target_output):
+        return self.pd_error_wrt_output(target_output) * self.calculate_pd_total_net_input_wrt_input();
+
+    def calculate_error(self, target_output):
+        return 0.5 * (target_output - self.output) ** 2
+
+    def pd_error_wrt_output(self, target_output):
+        return -(target_output - self.output)
+
+    def calculate_pd_total_net_input_wrt_input(self):
+        return self.output * (1 - self.output)        
  
 
 nn = neuralNet(2, 2, 1)
