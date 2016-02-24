@@ -6,11 +6,11 @@ import math
 
 # sigmoid function
 def sigmoid(x):
-    return 1.0/(1.0 + math.exp(-x)
+   return 1.0/(1.0 + math.exp(-x)
 
 # derivative of the sigmoid function
 def sigmoid_prime(x):
-    return sigmoid(x)*(1.0-sigmoid(x))
+   return (sigmoid(x) * ( 1.0 - sigmoid(x)))
 
 class neuralNet:
 	#default value of alpha = 0.5
@@ -28,6 +28,26 @@ class NeuronLayer:
         self.neurons = []
         for i in range(num_neurons):
             self.neurons.append(Neuron(self.bias))
+
+    def inspect(self):
+        print('Neurons:', len(self.neurons))
+        for n in range(len(self.neurons)):
+            print(' Neuron', n)
+            for w in range(len(self.neurons[n].weights)):
+                print('  Weight:', self.neurons[n].weights[w])
+            print('  Bias:', self.bias)
+
+    def feed_forward(self, inputs):
+        outputs = []
+        for neuron in self.neurons:
+            outputs.append(neuron.calculate_output(inputs))
+        return outputs
+
+    def get_outputs(self):
+        outputs = []
+        for neuron in self.neurons:
+            outputs.append(neuron.output)
+        return outputs            
 
 class Neuron:
     def __init__(self, bias):
