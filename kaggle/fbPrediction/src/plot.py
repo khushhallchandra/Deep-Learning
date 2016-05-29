@@ -1,3 +1,10 @@
+import readData
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import os
+
+df_train = loadData('training')
 df_train["hour"]       = (df_train["time"]%(60*24))//60.
 df_train["dayofweek"]  = np.ceil((df_train["time"]%(60*24*7))//(60.*24))
 df_train["day"]  = np.ceil((df_train["time"]/(60*24)))
