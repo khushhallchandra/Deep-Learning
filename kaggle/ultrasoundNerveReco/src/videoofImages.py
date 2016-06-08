@@ -31,3 +31,30 @@ def add_masks(images):
         mask = cv2.imread(to_mask_path(f_image))
         images_plus_masks[f_image] = image_plus_mask(img, mask)
     return images_plus_masks
+    
+def get_patient_images(patient):
+    # Return a dict of patient images, i.e. dict[filepath]
+    f_path = IMAGE_DIR + '%i_*.tif' % patient 
+    f_ultrasounds = [f for f in glob.glob(f_path) if 'mask' not in f]
+    images = {f:get_image(f) for f in f_ultrasounds}
+    return images
+
+
+def image_features(img):
+    return tile_features(img)   # a tile is just an image...
+
+
+def tile_features(tile, tile_min_side = TILE_MIN_SIDE):
+    # Recursively split a tile (image) into quadrants, down to a minimum 
+    # tile size, then return flat array of the mean brightness in those tiles.
+    tile_x, tile_y = tile.shape
+    mid_x = tile_x / 2
+    mid_y = tile_y / 2
+    if (mid_x < tile_min_side) or (mid_y < tile_min_side):
+        return np.array([tile.mean()]) # hit minimum tile size
+    else:
+        tiles = [ tile[:mid_x, :mid_y ], tile[mid_x:, :mid_y ], 
+                  tile[:mid_x , mid_y:], tile[mid_x:,  mid_y:] ] 
+        features = [tile_features(t) for t in tiles]
+        return np.array(features).flatten()
+    
