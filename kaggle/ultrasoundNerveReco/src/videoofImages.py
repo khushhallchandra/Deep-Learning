@@ -1,3 +1,21 @@
+import glob
+import os.path 
+import cv2
+import numpy as np 
+import collections
+import matplotlib
+import scipy.spatial.distance
+import itertools
+import matplotlib.pyplot as plt 
+import matplotlib.animation as animation
+
+
+IMAGE_DIR        = '../input/train/'
+MSEC_PER_FRAME   = 200  
+MSEC_REPEAT_DELAY= 2000
+ADD_MASK_OUTLINE = True
+TILE_MIN_SIDE    = 50     # pixels; see tile_features()
+SHOW_GIF         = False 
 
 def grays_to_RGB(img):
     # Convert a 1-channel grayscale image into 3 channel RGB image
