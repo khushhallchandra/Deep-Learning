@@ -51,4 +51,20 @@ plt.title('std(y) vs mean accuracy for each place')
 
 plt.show()
 
+p = plt.scatter(acc_df.mean_accuracy,acc_df.std_y)
+l = plt.plot([i for i in range(0,1000)], [func(i, -0.01277189,  1.4337799 ,  2.71943575) for i in range(0,1000)], 'r', linewidth=1)
+plt.xlabel('Mean Accuracy')
+plt.ylabel('Std(y)')
+plt.title('std(y) vs Mean accuracy for each place (exp decay)')
+
+plt.show()
+popt, pcov = scipy.optimize.curve_fit(func, acc_df.mean_accuracy, acc_df.std_y)
+popt, pcov = scipy.optimize.curve_fit(func4, acc_df.mean_accuracy, acc_df.std_y)
+p = plt.scatter(acc_df.mean_accuracy,acc_df.std_y)
+l = plt.plot([i for i in range(0,1000)], [func(i, 221.24964964,   12.02131292,  804.60004683) for i in range(0,1000)], 'r', linewidth=1)
+plt.xlabel('Mean Accuracy')
+plt.ylabel('Std(y)')
+plt.title('std(y) vs Mean accuracy for each place (1/x)')
+
+plt.show()
 
