@@ -91,3 +91,50 @@ def prepare_data(df_train, df_test, n_cell_x, n_cell_y):
         
     #Returning the modified dataframes
     return df_train, df_test
+
+def process_one_cell(df_train, df_test, grid_id, th):
+    """
+    Does all the processing inside a single grid cell: Computes the training
+    and test sets inside the cell. Fits a classifier to the training data
+    and predicts on the test data. Selects the top 3 predictions.
+    
+    Parameters:
+    ----------    
+    df_train: pandas DataFrame
+              Training set
+    df_test: pandas DataFrame
+             Test set
+    grid_id: int
+             The id of the grid to be analyzed
+    th: int
+       Threshold for place_id. Only samples with place_id with at least th
+       occurrences are kept in the training set.
+    
+    Return:
+    ------    
+    pred_labels: numpy ndarray
+                 Array with the prediction of the top 3 labels for each sample
+    row_ids: IDs of the samples in the submission dataframe 
+    """   
+    #Working on df_train
+    df_cell_train = df_train.loc[df_train.grid_cell == grid_id]
+    place_counts = df_cell_train.place_id.value_counts()
+    mask = place_counts[df_cell_train.place_id.values] >= th
+    df_cell_train = df_cell_train.loc[mask.values]
+    
+    #Working on df_test
+    df_cell_test = df_test.loc[df_test.grid_cell == grid_id]
+    row_ids = df_cell_test.index
+    
+    le = LabelEncoder()
+    y = le.fit_transform(df_cell_train.place_id.values)
+    X = df_cell_train.drop(['place_id', 'grid_cell'], axis = 1).values
+
+    #Training Classifier
+    clf = SGDClassifier(loss='modified_huber', n_iter=1, random_state=0, n_jobs=-1)  
+    clf.fit(X, y)
+    X_test = df_cell_test.drop(['grid_cell'], axis = 1).values
+    y_pred = clf.predict_proba(X_test)
+
+    pred_labels = le.inverse_transform(np.argsort(y_pred, axis=1)[:,::-1][:,:3])    
+    return pred_labels, row_ids    
