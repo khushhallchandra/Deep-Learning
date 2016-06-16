@@ -138,3 +138,23 @@ def process_one_cell(df_train, df_test, grid_id, th):
 
     pred_labels = le.inverse_transform(np.argsort(y_pred, axis=1)[:,::-1][:,:3])    
     return pred_labels, row_ids    
+
+
+def process_grid(df_train, df_test, df_sub, th, n_cells):
+    """
+    Iterates over all grid cells and aggregates the results of individual cells
+    """    
+    for g_id in range(n_cells):
+        if g_id % 10 == 0:
+            print('iteration: %s' %(g_id))
+        
+        #Applying classifier to one grid cell
+        pred_labels, row_ids = process_one_cell(df_train, df_test, g_id, th)
+        #Converting the prediction to the submission format
+        str_labels = np.apply_along_axis(lambda x: ' '.join(x.astype(str)), 
+                                         1, pred_labels)
+        #Updating submission file
+        df_sub.loc[row_ids] = str_labels.reshape(-1,1)
+        
+    return df_sub       
+                 
