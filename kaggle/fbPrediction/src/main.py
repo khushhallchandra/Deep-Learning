@@ -158,3 +158,36 @@ def process_grid(df_train, df_test, df_sub, th, n_cells):
         
     return df_sub       
                  
+if __name__ == '__main__':
+
+    print('Loading data ...')
+    df_train = pd.read_csv('../input/train.csv', dtype={'x':np.float32, 
+                                               'y':np.float32, 
+                                               'accuracy':np.int16,
+                                               'time':np.int,
+                                               'place_id':np.int}, 
+                                               index_col = 0)
+    df_test = pd.read_csv('../input/test.csv', dtype={'x':np.float32,
+                                              'y':np.float32, 
+                                              'accuracy':np.int16,
+                                              'time':np.int,
+                                              'place_id':np.int}, 
+                                              index_col = 0)
+    df_sub = pd.read_csv('../input/sample_submission.csv', index_col = 0)   
+    
+    #Defining the size of the grid
+    n_cell_x = 10
+    n_cell_y = 10 
+    df_train, df_test = prepare_data(df_train, df_test, n_cell_x, n_cell_y)
+    
+    #Solving classification problems inside each grid cell
+    th = 500 #Threshold on place_id inside each cell. Only place_ids with at 
+            #least th occurrences inside each grid_cell are considered. This
+            #is to avoid classes with very few samples and speed-up the 
+            #computation.
+    
+    df_submission  = process_grid(df_train, df_test, df_sub, th, 
+                                  n_cell_x * n_cell_y)                                 
+    #creating the submission
+    print('Generating submission file ...')
+    df_submission.to_csv("sub.csv", index=True) 
