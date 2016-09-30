@@ -1,11 +1,9 @@
-IMAGES_TO_SHOW = 20  # configure to taste :)
-
+IMAGES_TO_SHOW = 15
 
 import numpy as np
 import matplotlib.pyplot as plt
 import glob, os, os.path
 import cv2
-
 
 def image_with_mask(img, mask):
     # returns a copy of the image with edges of the mask added in red
@@ -36,13 +34,9 @@ def plot_image(img, title=None):
     plt.show()
 
 def main():
-
     f_ultrasounds = [img for img in glob.glob("../input/train/*.tif") if 'mask' not in img]
-    # f_ultrasounds.sort()  
     f_masks       = [fimg_to_fmask(fimg) for fimg in f_ultrasounds]
-    
     images_shown = 0 
-
     for f_ultrasound, f_mask in zip(f_ultrasounds, f_masks):
 
         img  = plt.imread(f_ultrasound)
@@ -60,3 +54,4 @@ def main():
 
         if images_shown >= IMAGES_TO_SHOW:
             break
+main()        
